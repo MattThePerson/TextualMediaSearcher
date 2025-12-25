@@ -1,0 +1,8 @@
+torch
+
+scikit-learn==1.7.2
+transformers==4.57.3
+nltk==3.9.2
+
+numpy
+ipykernel

@@ -1,0 +1,7 @@
+
+# general
+.venv
+__pycache__
+
+# custom
+.old

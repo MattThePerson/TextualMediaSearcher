@@ -1,0 +1,11 @@
+
+
+# path to folder containing audio files, eg. Podcasts. 
+audio_directory: /path/here
+
+
+BERT_models:
+  - fi:
+    - TurkuNLP/bert-base-finnish-cased-v1
+  - en:
+    - unused
