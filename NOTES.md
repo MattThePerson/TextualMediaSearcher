@@ -1,6 +1,12 @@
 
 
 
-whisper example:
-    `whisper test.mp3 --language fi --model small --output_format txt`
+# whisper example:
+
+whisper /abs/path/here.mp3 \
+  --language fi \
+  --model small \
+  --verbose False \ 
+  --output_format json \
+  --output_dir /abs/output/dir
 

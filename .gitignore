@@ -1,7 +1,12 @@
 
 # general
 .venv
+venv
 __pycache__
+.vscode
 
 # custom
 .old
+transcripts
+embeddings
+*.pkl
