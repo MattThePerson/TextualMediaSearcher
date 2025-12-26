@@ -10,7 +10,7 @@ from src.segment import get_transcript_segments
 from src.embedding import get_model_ST, get_sentence_embeddings
 from src.helpers import load_sent_embeddings
 from src.similarity import get_sim
-from src.tui import enter_results_list_tui
+from src.tui import enter_TUI
 
 
 
@@ -21,7 +21,7 @@ def main(model_name: str):
     if len(transcript_files) == 0:
         print("\nNo transcript files found, edit media dirs in config.yaml and run transcribe.py")
         return 1
-    print(f"\nfound {len(transcript_files)} transcripts (with {len(segments)} segments)\n")
+    print(f"\nFound {len(transcript_files)} transcripts\n")
     
     # load embeddings
     try:
@@ -67,7 +67,8 @@ def main(model_name: str):
         query_emb = get_sentence_embeddings(query, model)
         result_pairs = get_sim(query_emb, sent_embeds) # list((index, sim_score))
 
-        enter_results_list_tui(
+        enter_TUI(
+            query,
             segments,
             index2id,
             result_pairs,

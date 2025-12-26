@@ -22,7 +22,7 @@ class TranscriptSegment:
 def transcript_path_to_src(file: Path) -> str:
     parent_dir = name_to_path(file.parent.name)
     stem_safe = glob.escape(file.stem)
-    files = list( Path(parent_dir).rglob(f"{stem_safe}.*") )
+    files = list( Path(parent_dir).glob(f"{stem_safe}.*") )
     if len(files) == 0:
         return ""
     return str(files[0])
@@ -36,7 +36,7 @@ def get_transcript_segments(dir: str) -> tuple[dict[str, TranscriptSegment], lis
     for file in transcript_files:
         src = transcript_path_to_src(file)
         if src == "":
-            raise Exception(f"unable to find src for transcript: {file}")
+            print(f"  \033[93m WARNING: \033[0m unable to find src for transcript: \"{str(file).replace(f'{dir}/', '')}\"")
         with open(str(file), 'r') as f:
             data = json.load(f)
         prev_seg = None
