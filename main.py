@@ -1,77 +1,90 @@
-import argparse
-import yaml
 from pathlib import Path
+import time
+import yaml
+import readline # this bullshit enabled ctrl+p
+from prompt_toolkit import PromptSession
+from prompt_toolkit.key_binding import KeyBindings
 
-print("importing")
+print("\nimporting libraries")
 from src.segment import get_transcript_segments
 from src.embedding import get_model, get_sentence_embeddings
 from src.helpers import load_sent_embeddings
 from src.similarity import get_sim
+from src.tui import enter_results_list_tui
 
 
 
-def main(query: str, model_name: str):
+def main(model_name: str):
+
+    # transcripts
+    segments, transcript_files = get_transcript_segments('transcripts')
+    if len(transcript_files) == 0:
+        print("\nNo transcript files found, edit media dirs in config.yaml and run transcribe.py")
+        return 1
+    print(f"\nfound {len(transcript_files)} transcripts (with {len(segments)} segments)\n")
+
     
-    # load shit
-    print('loading')
+    # load embeddings
+    try:
+        sent_embeds, index2id = load_sent_embeddings()
+    except FileNotFoundError:
+        print("\nNo segment embeddings found, run preprocess.py (once you have transcripts ready)")
+        return 1
+
+    
+    # load model
+    print(f"Loading model: {model_name}")
+    start = time.time()
     model, tokenizer = get_model(model_name)
-    segments = get_transcript_segments('transcripts')
-    sent_embeds, index2id = load_sent_embeddings()
-    
-    # find similar
-    print('computing')
-    query_emb = get_sentence_embeddings(query, model, tokenizer)
-    pairs = get_sim(query_emb, sent_embeds) # list((index, sim_score))
+    print("    took {:.2f}s\n".format(time.time()-start))
     
     
-    # print shit
-    if True:
-        for idx, sim in pairs[:5]:
-            seg = segments[index2id[idx]]
-            file = Path(seg.src).name
-            print(" file={:<20}  |  start={:<6}  |  sim={:.4f}  |  text='{}'".format(file[:37], seg.start, sim, seg.text))
+    # session
+    kb = KeyBindings()
 
+    @kb.add("c-q")
+    def _(event):
+        event.app.exit(result=None)
+    
+    session = PromptSession(key_bindings=kb)
+    
+    # Welcome
+    print("\n #########################################")
+    print(  " #                                       #")
+    print(  " #   Welcome to Textual Media Searcher   #")
+    print(  " #                                       #")
+    print(  " #########################################\n\n")
+    
+    # LOOP
+    while True:
 
-    # print segment neighbors
-    if False:
-        seg = segments[index2id[pairs[0][0]]]
-        for i in range(5):
-            print(seg.text)
-            seg = segments[seg.next]
+        query = session.prompt("(give query) > ")
+        if query is None:
+            break
+        if query == "":
+            print("\nPlease provide a non-empty query")
+            continue
 
+        query_emb = get_sentence_embeddings(query, model, tokenizer)
+        result_pairs = get_sim(query_emb, sent_embeds) # list((index, sim_score))
 
-    # open segment in vlc
-    if False:
-        import subprocess
-        print(seg.text)
-        cmd = [
-            "vlc",
-            f"--start-time={seg.start}",
-            seg.src,
-        ]
-        print(cmd)
-        subprocess.Popen(cmd)
+        enter_results_list_tui(
+            segments,
+            index2id,
+            result_pairs,
+        )
 
-
-
-def time_to_seconds(t):
-    parts = t.split(":")
-    return sum(int(p) * 60 ** i for i, p in enumerate(reversed(parts)))
-
+    return 0
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--query', required=True)
-    args = parser.parse_args()
     
     with open('config.yaml', 'r') as f:
         config = yaml.safe_load(f)
     
-    print()
-    main(
-        args.query,
-        config['embedding_model'],
-    )
-    print()
+    try:
+        main(config["embedding_model"])
+    except KeyboardInterrupt:
+        pass
 
+    print("\n\nThank you, bye! <3\n")

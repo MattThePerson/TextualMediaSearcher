@@ -13,7 +13,7 @@ def main(model_name: str):
     os.makedirs('embeddings', exist_ok=True)
     
     # process transcripts into usable form
-    segments = get_transcript_segments('transcripts')
+    segments, _ = get_transcript_segments('transcripts')
 
     ids = list( segments.keys() )
     # id2index = { id_: idx for idx, id_ in enumerate(ids) }

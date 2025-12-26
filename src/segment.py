@@ -27,10 +27,10 @@ def transcript_path_to_src(file: Path) -> str:
 
 
 
-def get_transcript_segments(dir: str) -> dict[str, TranscriptSegment]:
+def get_transcript_segments(dir: str) -> tuple[dict[str, TranscriptSegment], list]:
     segments = {}
     
-    transcript_files = Path(dir).rglob("*.json")
+    transcript_files = list(Path(dir).rglob("*.json"))
     for file in transcript_files:
         src = transcript_path_to_src(file)
         with open(str(file), 'r') as f:
@@ -51,5 +51,5 @@ def get_transcript_segments(dir: str) -> dict[str, TranscriptSegment]:
             prev_seg = seg
             segments[seg_id] = seg
     
-    return segments
+    return segments, transcript_files
 

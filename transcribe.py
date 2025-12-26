@@ -69,8 +69,8 @@ if __name__ == "__main__":
     
     print()
     main(
-        config['audio_directories'],
-        config['language'],
-        config['whisper_model_size'],
+        config['media_directories'],
+        config['whisper_settings']['language'],
+        config['whisper_settings']['model'],
     )
     print()
