@@ -7,17 +7,30 @@
 
 # paths to folders containing media, such as videos, podcasts, etc
 media_directories:
-  - /path/to/media/folder
+  - /store/media/videos
 
 
-# finnish:  TurkuNLP/bert-base-finnish-cased-v1
-embedding_model: TurkuNLP/bert-base-finnish-cased-v1
+
+models:
+
+  sentence_transformers:
+    sentence-transformers/all-MiniLM-L6-v2            # lightweight, fast, good quality
+    # sentence-transformers/all-mpnet-base-v2           # higher quality
+    # sentence-transformers/bert-base-nli-mean-tokens   # classic NLI‑tuned BERT sentence embedder
+    # TurkuNLP/sbert-uncased-finnish-paraphrase         # finnish
+
+  word_transformers:
+    fse/word2vec-google-news-300                      # 
+
+  bert_based:
+    google-bert/bert-base-uncased                     # classic BERT model
+    # TurkuNLP/bert-base-finnish-cased-v1               # finnish
 
 
 # transcription generator
 whisper_settings:
 
-  language: fi
+  language: en
 
   # [small|default|medium]
   model: small

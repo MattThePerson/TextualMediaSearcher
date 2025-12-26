@@ -2,6 +2,7 @@ torch
 
 scikit-learn==1.7.2
 transformers==4.57.3
+sentence-transformers==5.2.0
 nltk==3.9.2
 
 numpy

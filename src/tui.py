@@ -57,15 +57,22 @@ def enter_transcript_explore_tui(
         # KEYBOARD INTERACTIONS
         key = stdscr.getch()
 
-        if key in (ord('q'), ord('Q'), 27):  # q or Esc
-            return None
-        elif key in (curses.KEY_UP, ord('k'), ord('K')):
+        if key in (ord('q'), ord('Q'), curses.KEY_TAB, 27):  # q or Esc or tab
+            # BACK
+            return
+
+        elif key in (curses.KEY_UP, ord('k'), ord('K'), ord('w'), ord('W')):
+            # UP
             if target_seg.prev:
                 target_seg = segments[target_seg.prev]
-        elif key in (curses.KEY_DOWN, ord('j'), ord('J')):
+            
+        elif key in (curses.KEY_DOWN, ord('j'), ord('J'), ord('s'), ord('S')):
+            # DOWN
             if target_seg.next:
                 target_seg = segments[target_seg.next]
-        elif key in (ord('o'), ord('O')): # Open position in media
+            
+        elif key in (ord('o'), ord('O')):
+            # OPEN MEDIA
             open_vlc_to_segment(target_seg)
 
 
@@ -111,22 +118,34 @@ def enter_results_list_tui(
                 else:
                     stdscr.addstr(y, 0, seg.text[:w-1])
 
+            # KEYBOARD INTERACTIONS
             key = stdscr.getch()
 
-            if key in (ord('q'), ord('Q'), 27):  # q or Esc
+            if key in (ord('q'), ord('Q'), curses.KEY_TAB, 27):  # q or Esc or tab
+                # BACK
                 return
-            elif key in (curses.KEY_UP, ord('k'), ord('K')):
+            
+            elif key in (curses.KEY_UP, ord('k'), ord('K'), ord('w'), ord('W')):
+                # UP
                 idx = max(0, idx - 1)
-            elif key in (curses.KEY_DOWN, ord('j'), ord('J')):
+                
+            elif key in (curses.KEY_DOWN, ord('j'), ord('J'), ord('s'), ord('S')):
+                # DOWN
                 idx = min(limit - 1, idx + 1)
-            elif key in (curses.KEY_ENTER, 10, 13): # Jump to transcript
+                
+            elif key in (curses.KEY_ENTER, ord('e'), ord('E'), 10, 13):
+                # JUMP TO
                 enter_transcript_explore_tui(
                     stdscr,
                     segments,
                     top_segments[idx],
                 )
-            elif key in (ord('o'), ord('O')): # Open position in media
+                
+            elif key in (ord('o'), ord('O')):
+                # OPEN MEDIA
+                print(top_segments[idx].id_)
                 open_vlc_to_segment(top_segments[idx])
                 
 
     return curses.wrapper(_tui)
+curses.KEY_TAB

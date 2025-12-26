@@ -7,7 +7,7 @@ from prompt_toolkit.key_binding import KeyBindings
 
 print("\nimporting libraries")
 from src.segment import get_transcript_segments
-from src.embedding import get_model, get_sentence_embeddings
+from src.embedding import get_model_ST, get_sentence_embeddings
 from src.helpers import load_sent_embeddings
 from src.similarity import get_sim
 from src.tui import enter_results_list_tui
@@ -22,7 +22,6 @@ def main(model_name: str):
         print("\nNo transcript files found, edit media dirs in config.yaml and run transcribe.py")
         return 1
     print(f"\nfound {len(transcript_files)} transcripts (with {len(segments)} segments)\n")
-
     
     # load embeddings
     try:
@@ -35,7 +34,7 @@ def main(model_name: str):
     # load model
     print(f"Loading model: {model_name}")
     start = time.time()
-    model, tokenizer = get_model(model_name)
+    model = get_model_ST(model_name)
     print("    took {:.2f}s\n".format(time.time()-start))
     
     
@@ -65,7 +64,7 @@ def main(model_name: str):
             print("\nPlease provide a non-empty query")
             continue
 
-        query_emb = get_sentence_embeddings(query, model, tokenizer)
+        query_emb = get_sentence_embeddings(query, model)
         result_pairs = get_sim(query_emb, sent_embeds) # list((index, sim_score))
 
         enter_results_list_tui(
@@ -83,7 +82,9 @@ if __name__ == "__main__":
         config = yaml.safe_load(f)
     
     try:
-        main(config["embedding_model"])
+        main(
+            config['models']['sentence_transformers'],
+        )
     except KeyboardInterrupt:
         pass
 
