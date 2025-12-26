@@ -1,34 +1,37 @@
 # Textual Media Searcher
 
-**Search Videos and Podcasts with Text**
+**Search Videos and Podcasts using Text**
 
-Program for searching for relevant segments withing video and audio files given a text query. Generates transcripts with **openai-whisper** and processes them with **BERT** model. 
-
-*Supports English and Finnish.*
+Basic program for finding relevant sections withing video and audio files using their transcripts. Explore most the relevant transcript sections and even open media to transcript position with VLC! Transcripts generated with **openai-whisper** and language embedding done using **BERT** model. 
 
 
 ## Requirements
 
+### System
+
 - **Python:** 3.7+
-- **openai-whisper:** This is required for generating transcripts of the audio files. `pipx install openai-whisper`
+- **Whisper:** This is required for generating transcripts of the audio files. Recommended: `pipx install openai-whisper`
 - **VLC (optional):** This is required if you want to be able to jump directly to the relevant segment within the media. 
 
 
-## 1. Setup
+### Python
 
-1. **Install requirements.txt**: `pip install -r requirements.txt`. Recommened to install PyTorch separately first
-2. **Edit `config.yaml`:** Write paths to folders containing your audio files. Optionally, change langage or embeddings model. 
-
-
-## 2. Preprocess
-
-1. **Transcripts:** Generate transcripts using `transcribe.py`. To select language, use `--language [en|fi]`.
-2. **Process transcripts:** Run `preprocess.py` to generate sentence and word embeddings. 
+1. **PyTorch:** recommended to install first
+2. **requirements.txt**: `pip install -r requirements.txt`
 
 
-## 3. Usage (search)
+## Usage
 
-Run: `main.py "search query sentence here"` to perform segments search and open TUI with navigable results. 
+1. **Edit the config:** Insert the paths to your *media_directories* into `config.yaml`. 
 
-Can use `--mode` to switch between using sentence or word embeddings for the searching. 
+2. **Generate transcripts:** Generate transcripts using `transcribe.py`. Optionally: change language in the config (supports translation!)
+
+3. **Generate embeddings:** Run `preprocess.py` to generate embeddings used for relevancy calculation. Optionally: change *embedding_model* in the config to another model from **Hugging Face**. 
+
+4. **Run**: `main.py` and type in some queries!
+
+
+## Ideas for future additions
+
+- Alternative mode where word embeddings are used, possibly enabling better synonym based search. 
 

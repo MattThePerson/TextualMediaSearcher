@@ -1,11 +1,23 @@
+# GIT:
+# To stop tracking config.yaml:
+#   git update-index --assume-unchanged config.yaml
+# To start tracking again:
+#   git update-index --no-assume-unchanged config.yaml
 
 
-# path to folder containing audio files, eg. Podcasts. 
-audio_directory: /path/here
+# paths to folders containing media, such as videos, podcasts, etc
+media_directories:
+  - /path/to/media/folder
 
 
-BERT_models:
-  - fi:
-    - TurkuNLP/bert-base-finnish-cased-v1
-  - en:
-    - unused
+# finnish:  TurkuNLP/bert-base-finnish-cased-v1
+embedding_model: TurkuNLP/bert-base-finnish-cased-v1
+
+
+# transcription generator
+whisper_settings:
+
+  language: fi
+
+  # [small|default|medium]
+  model: small
